@@ -1,3 +1,4 @@
 누구나 쉽게 이해할 수 있는 Git 명령어
 test
 push test
+로컬에서 push
