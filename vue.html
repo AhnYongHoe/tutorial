@@ -1,0 +1,230 @@
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <style>
+        table {
+        border-collapse: collapse;
+        }
+
+        table, th, td {
+        border: 1px solid black;
+        }
+
+        .active {
+            background-color: teal;
+        }
+
+        template {
+			display: none;
+		}
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://vuejs.org/js/vue.min.js"></script>
+    <script>
+        (function(){return (function templatePolyfill(){"use strict";if("content"in document.createElement("template")){return false;}var templates=document.getElementsByTagName("template");var plateLen=templates.length;for(var x=0;x<plateLen;++x){var template=templates[x];var content=template.childNodes;var fragment=document.createDocumentFragment();while(content[0]){fragment.appendChild(content[0]);}template.content=fragment;}}());}());
+    </script>
+</head>
+<body>
+    <table id="list">
+        <tbody>
+            <tr v-for="data in datas" :key="data.idx" @click="view(data)">
+                <td>{{ data.a }}</td>
+                <td>{{ data.b }}</td>
+                <td>{{ data.c }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <table id="detail">
+        <tbody>
+            <tr>
+                <td><input type="text" v-model="data.a"/></td>
+                <td><input type="text" v-model="data.b"/></td>
+                <td><input type="text" v-model="data.c"/></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="list-demo">
+        <button v-on:click="add">Add</button>
+        <button v-on:click="remove">Remove</button>
+        <transition-group name="list" tag="p">
+          <span v-for="item in items" v-bind:key="item" class="list-item">
+            {{ item }}
+          </span>
+        </transition-group>
+    </div>
+
+
+
+
+    <div id="tree">
+        <dl class="depth_01">
+            <cate-1st-component>            
+            <dd>
+                <dl class="depth_02">
+                    <cate-2nd-component>
+                    <dd>
+                        <dl class="depth_03">
+                            <cate-3rd-component>
+                            <dd>
+                                <cate-lst-component></cate-lst-component>
+                            </dd>
+                            </cate-3rd-component>
+                        </dl>
+                    </dd>
+                    </cate-2nd-component>
+                </dl>
+            </dd>
+            </cate-1st-component>
+        </dl>
+    </div>
+
+    <div id="div_template">
+        <input type="text" v-model="search" />
+        <table>
+        <tbody>
+            <tr v-for="data in datas" v-if="data.b.includes(search)">
+                <td>{{ data.a }}</td>
+                <td>{{ data.b }}</td>
+                <td>{{ data.c }}</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+
+    <script type="text/javascript">
+        new Vue({
+            el: "#div_template",
+            data: {
+                search: '',
+                datas: [
+                    {a: 'a0', b: 'b0', c: 'c0'},
+                    {a: 'a1', b: 'b1', c: 'c1'},
+                    {a: 'a2', b: 'b2', c: 'c2'},
+                    {a: 'a3', b: 'b3', c: 'c3'}
+                ]
+            }
+        });
+
+        var list_vue = new Vue({
+            el: "#list",
+            data: {
+                datas: [
+                    {a: 'a0', b: 'b0', c: 'c0'},
+                    {a: 'a1', b: 'b1', c: 'c1'},
+                    {a: 'a2', b: 'b2', c: 'c2'},
+                    {a: 'a3', b: 'b3', c: 'c3'}
+                ]
+            },
+            methods: {
+                view: function(data) {
+                    detail_vue.data = JSON.parse(JSON.stringify(data));
+                }
+            }
+        });
+        var detail_vue = new Vue({
+            el: "#detail",
+            data: {
+                data: {}
+            }
+        });
+
+        var cates = [
+            {cd: 'A1', nm: 'AAA', pcd:'0', lvl:0},
+            {cd: 'A2', nm: 'BBB', pcd:'A1', lvl:1},
+            {cd: 'A3', nm: 'CCC', pcd:'A2', lvl:2},
+            {cd: 'A4', nm: 'DDD', pcd:'A3', lvl:3},
+            {cd: 'A5', nm: 'EEE', pcd:'A4', lvl:4},
+            {cd: 'A6', nm: 'FFF', pcd:'A3', lvl:3},
+            {cd: 'A7', nm: 'GGG', pcd:'A6', lvl:4},
+            {cd: 'A8', nm: 'HHH', pcd:'A2', lvl:2}
+        ];
+
+        var cate_1st = {
+            template: '<dt>{{ nm }}</dt>',
+            data: function() {
+                return {
+                    data: cates.filter(function(i){
+                        return i.pcd == 0;
+                    })
+                }
+            }
+        }
+        var cate_2nd = {
+            template: '<dt>{{ nm }}</dt>',
+            data: function() {
+                return {
+                    data: cates.filter(function(i){
+                        return i.cd == cate_1st.pcd;
+                    })
+                }
+            },
+            props: ['propsData']
+        }
+        var cate_3rd = {
+            template: '<dt>{{ nm }}</dt>',
+            data: function() {
+                return {
+                    data: cates.filter(function(i){
+                        return i.cd == cate_2nd.pcd;
+                    })
+                }
+            },
+            props: ['propsData']
+        }
+        var cate_lst = {
+            template: '<div>{{ nm }}</div>',
+            data: function() {
+                return {
+                    data: cates.filter(function(i){
+                        return i.cd == cate_3rd.pcd;
+                    })
+                }
+            },
+            props: ['propsData']
+        }
+        new Vue({
+            el: '#tree',
+            component: {
+                'cate-1st-component': cate_1st,
+            },
+            data: {
+                parentData: 'new Vue()'
+            }
+        });
+
+
+        new Vue({
+            el: '#list-demo',
+            data: {
+                items: [1,2,3,4,5,6,7,8,9],
+                nextNum: 10
+            },
+            methods: {
+                randomIndex: function () {
+                return Math.floor(Math.random() * this.items.length)
+                },
+                add: function () {
+                this.items.splice(this.randomIndex(), 0, this.nextNum++)
+                },
+                remove: function () {
+                this.items.splice(this.randomIndex(), 1)
+                },
+            }
+        })
+    </script>
+    <style>
+        .list-item {
+        display: inline-block;
+        margin-right: 10px;
+        }
+        .list-enter-active, .list-leave-active {
+        transition: all 1s;
+        }
+        .list-enter, .list-leave-to /* .list-leave-active below version 2.1.8 */ {
+        opacity: 0;
+        transform: translateX(30px);
+        }
+    </style>
+</body>
+</html>
