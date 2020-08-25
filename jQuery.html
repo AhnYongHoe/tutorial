@@ -1,0 +1,252 @@
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <style>
+        table {
+        border-collapse: collapse;
+        }
+
+        table, th, td {
+        border: 1px solid black;
+        }
+
+        .active {
+            background-color: teal;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://vuejs.org/js/vue.min.js"></script>
+</head>
+<body>
+    <input type="text" />
+    <input type="button" value=" data init " onclick="fn_init();"/>
+    <input type="button" value=" data set1 " onclick="fn_set1();"/>
+    <input type="button" value=" data set2 " onclick="fn_set2();"/>
+
+    <table id="tbl">
+        <thead>
+            <thead>
+                <tr>
+                    <th>가</th>
+                    <th>나</th>
+                    <th>다</th>
+                    <th>라</th>
+                    <th>바</th>
+                </tr>
+            </thead>
+        </thead>
+        <tbody>
+            <tr v-for="(data,index) in datas" :key="data.a" :data="data.idx = index" :class="{'active':(index==0)}" @click="selectedRow(data)">
+                <td>{{data.a}}</td>
+                <td>{{data.b}}</td>
+                <td>{{data.c}}</td>
+                <td>{{data.d}}</td>
+                <td>{{data.idx}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table id="table">
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>11</td>
+                <td>12</td>
+                <td>a</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>11</td>
+                <td>12</td>
+                <td>b</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>11</td>
+                <td>13</td>
+                <td>c</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>12</td>
+                <td>13</td>
+                <td>d</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>12</td>
+                <td>13</td>
+                <td>e</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>12</td>
+                <td>13</td>
+                <td>f</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="div">
+        <input type="text" id="ttextt" name="ttextt" value="AAA"/>
+        <input type="text" name="ttextt" value="BBB" checked/>
+        <select name="sselectt"><option value="1"></option></select>        
+    </div>
+
+    <script type="text/javascript">
+        //alert(fn_objectTypeValue('ttextt'));
+        //alert(fn_objectTypeValue('sselectt'));
+        //alert($("#ttextt").prop("tagName"));
+        var rowspan = 0;
+        var rowidx = 0;
+        var $td_item = "";
+        $.each($("#table tr"), function(index, item) {
+            if ($td_item == "") {
+                $td_item = $(item).find("td:eq(0)").text();
+                rowspan = 1;
+                rowidx = index - 1;
+            } else {
+                if ($td_item == $(item).find("td:eq(0)").text()) {
+                    rowspan++;
+                } else {
+                    $(item).siblings("tr").eq(rowidx).find("td:lt(2)").attr("rowspan", rowspan);
+                    rowspan = 1;
+                    rowidx = index;
+                }
+                $td_item = $(item).find("td:eq(0)").text();
+            }
+        });
+
+        function fn_objectTypeValue(obj) {
+            var ret = "";
+            switch ($('#div').find('name='+ obj +']').attr('type')) {
+                case "text":
+                    ret = $('#div[name='+ obj +']').val();
+                    break;
+                case "radio":
+                case "checkbox":
+                    ret = $('#div[name='+ obj +']:checked').val();
+                    break;
+                default:
+                    if ($('#div[name='+ obj +'] option') != undefined) {
+                        ret = $('#div[name='+ obj +'] option:checked').val();
+                    }
+                    break;
+            }
+            return ret;
+        }
+        
+        function fn_init() {
+            //tbl_vue.datas = [];
+            console.log(tbl_vue.datas);
+        }
+
+        function fn_set1() {
+            tbl_vue.datas.push(
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''},
+                {a: '1', b: '2', c: '3', d: '4', idx: ''}
+            );
+            $('#tbl').tabindex = 0;
+            $('#tbl').focus();
+        }
+
+        function fn_set2() {
+            tbl_vue.datas.push({a:'2', b: '2', c: '3', d: '4', idx: ''});
+        }
+
+        var tbl_vue = new Vue({
+            el: "#tbl",
+            data: {
+                datas: []
+            },
+            created: function() {
+            },
+            methods: {
+                changeCurrentRow: function() {
+                    var key = window.event.keyCode;
+                    var rowindex = 0;
+                    var selectedRowIndex = $("#tbl tbody > tr.active").prevAll().length;
+
+                    if (key == 13) {
+                        this.selectedRow(this.datas[selectedRowIndex]);
+                    } else {
+                        if (key == 40){
+                            rowindex = selectedRowIndex + 1;
+                        } else if (key == 38) {
+                            rowindex = selectedRowIndex - 1;
+                        }
+                        if (rowindex < 0) {
+                            selectedRowIndex = 0;
+                        } else if (rowindex > this.datas.length-1){
+                            selectedRowIndex = this.datas.length-1;
+                        } else {
+                            selectedRowIndex = rowindex;
+                        }
+
+                        $("#tbl tbody > tr").removeClass("active").eq(selectedRowIndex).addClass("active");
+                    }
+                },
+                selectedRow: function(data) {
+                    alert(JSON.stringify(data));
+                }
+            }
+        });
+        
+        
+        $('#tbl tbody').on('keydown', function(event) {
+            var key = event.keyCode;
+            var rowindex = 0;
+            var selectedRowIndex = $("#tbl tbody > tr.active").prevAll().length;
+
+            if (key == 13) {
+                //this.selectedRow(this.datas[selectedRowIndex]);
+            } else {
+                if (key == 40){
+                    rowindex = selectedRowIndex + 1;
+                } else if (key == 38) {
+                    rowindex = selectedRowIndex - 1;
+                }
+                if (rowindex < 0) {
+                    selectedRowIndex = 0;
+                } else if (rowindex > $(this).find('tr').length-1){
+                    selectedRowIndex = $(this).find('tr').length-1;
+                } else {
+                    selectedRowIndex = rowindex;
+                }
+
+                $("#tbl tbody > tr").removeClass("active").eq(selectedRowIndex).addClass("active");
+            }
+        });
+
+        var data1 = {a:'a', b:'b', c:'1', e:'e'};
+        var data2 = {a:'1', c:'c', d:'d'};
+        var data1 = Object.assign(data1,data2);
+        //console.log(data1);
+
+        var jsonData = [{mid:'a', cd:'a', nm:'b'},{mid:'a', cd:'b', nm:'c'},{mid:'d', cd:'e', nm:'f'}];
+        var result;
+        $.each(jsonData, function(idx,item) {
+            if (jsonData[idx].mid == 'a') {
+                console.log(jsonData[idx].cd);
+            }
+        });
+        //console.log(result);
+    </script>
+</body>
+</html>

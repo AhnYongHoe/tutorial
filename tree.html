@@ -1,0 +1,127 @@
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <style>
+        table {
+        border-collapse: collapse;
+        }
+
+        table, th, td {
+        border: 1px solid black;
+        }
+
+        .active {
+            background-color: teal;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://vuejs.org/js/vue.min.js"></script>
+</head>
+<body>
+    <div id="tree">
+        <dl class="depth_01" v-for="(cate1, index1) in datas.filter(function(i){return i.lvl == 0;})">
+            <dt>
+                <a href="#">{{ cate1.nm }}</a>
+            </dt>
+            <dd v-if="(cates2 = datas.filter(function(j){return (j.lvl == 1 && j.pcd == cate1.cd);})).length">
+                <dl class="depth_02" v-for="cate2 in cates2">
+                    <dt>
+                        <a href="#">{{ cate2.nm }}</a>
+                    </dt>
+                    <dd v-if="(cates3 = datas.filter(function(k){return (k.lvl == 2 && k.pcd == cate2.cd);})).length">
+                        <dl class="depth_03" v-for="cate3 in cates3">
+                            <dt>
+                                <a href="#">{{ cate3.nm }}</a>
+                            </dt>
+                            <dd v-if="(cates4 = datas.filter(function(m){return (m.lvl == 3 && m.pcd == cate3.cd);})).length">
+                                <div v-for="cate4 in cates4">
+                                    <a href="#">{{ cate4.nm }}</a>
+                                </div>
+                            </dd>
+                        </dl>
+                    </dd>
+                </dl>
+            </dd>
+        </dl>
+    </div>
+    <div id="tree2">
+        <dl class="depth_01" v-for="tree_1st in datas">
+            <dt>
+                <a href="#">{{ tree_1st.nm }}</a>
+            </dt>
+            <dd v-if="tree_1st.children.length">
+                <dl class="depth_02" v-for="tree_2nd in tree_1st">
+                    <dt>
+                        <a href="#">{{ tree_2nd.nm }}</a>
+                    </dt>
+                    <dd v-if="tree_2nd.children.length">
+                        <dl class="depth_03" v-for="tree_3rd in tree_2nd">
+                            <dt>
+                                <a href="#">{{ tree_3rd.nm }}</a>
+                            </dt>
+                            <dd v-if="tree_3rd.children.length">
+                                <div v-for="tree_4th in tree_3rd">
+                                    <a href="#">{{ tree_4th.nm }}</a>
+                                </div>
+                            </dd>
+                        </dl>
+                    </dd>
+                </dl>
+            </dd>
+        </dl>
+    </div>
+
+    <script type="text/javascript">
+        var tree = new Vue({
+            el: "#tree",
+            data: {
+                datas: []
+            }
+        });
+
+        var tree2 = new Vue({
+            el: "#tree2",
+            data: {
+                datas: []
+            }
+        });
+
+        var tree_data = [
+            {cd: 'A1', nm: 'AAA', pcd:'0', lvl:0},
+            {cd: 'A2', nm: 'BBB', pcd:'A1', lvl:1},
+            {cd: 'A3', nm: 'CCC', pcd:'A2', lvl:2},
+            {cd: 'A4', nm: 'DDD', pcd:'A3', lvl:3},
+            {cd: 'A5', nm: 'EEE', pcd:'A3', lvl:3},
+            {cd: 'A6', nm: 'FFF', pcd:'A3', lvl:3},
+            {cd: 'A7', nm: 'GGG', pcd:'A6', lvl:4},
+            {cd: 'A8', nm: 'HHH', pcd:'A2', lvl:2}
+        ];
+        var tree_data2 = function() {
+            return [];
+        };
+
+        $(document).ready(function(){
+            tree.datas = tree_data;
+            tree2.datas = tree_data2;
+        });
+
+        function checkSpecial(str) {
+            var special_pattern = /[!@#$%^&*()-=+'";:/?,\.<>\\]/gi;
+            
+            if(special_pattern.test(str)) {
+                console.log('asdfasdf');
+                return true;
+            } else {
+                return false; 
+            } 
+        }
+
+        function fn_keyup(obj) {
+            $(obj).val($(obj).val().replace(/[!@#$%^&*()\-=+'";:\/?,\.<>\\{}]/gi,''));
+        }
+
+    </script>
+
+    <input type="text" onkeyup="javascript:fn_keyup(this);" />
+</body>
+</html>
